@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pension Status</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" />
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #f4f4f4, #e4e4e4);
+      font-family: Arial, sans-serif;
+    }
+    .sidebar {
+      background-color: #071c4d;
+      width: 80px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 20px;
+      transition: transform 0.3s ease-in-out;
+      z-index: 1040;
+    }
+    .sidebar img {
+      width: 40px;
+      margin-bottom: 40px;
+    }
+    .sidebar .nav-link {
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      font-size: 1.5rem;
+    }
+    .sidebar i {
+      color: white;
+      font-size: 24px;
+      padding: 2rem;
+      margin-bottom: 30px;
+      cursor: pointer;
+    }
+    .sidebar .nav-link:hover {
+      border-radius: 16px;
+      background-color: #003580;
+      transition: .5s ease-in;
+    }
+    .logout-btn {
+      margin-top: auto;
+      margin-bottom: 20px;
+      color: white;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .logout-btn:hover {
+      color: #ff6b6b;
+    }
+    .content {
+      margin-left: 100px;
+      padding: 30px;
+    }
+    h2 {
+      font-weight: bold;
+    }
+    .search-container {
+      margin-bottom: 20px;
+      max-width: 400px;
+    }
+    .search-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    thead {
+      background-color: #071c4d;
+      color: white;
+    }
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+    }
+    tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    .status-active {
+      color: green;
+      font-weight: bold;
+    }
+    .status-inactive {
+      color: red;
+      font-weight: bold;
+    }
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1050;
+      font-size: 24px;
+      color: #071c4d;
+      background: white;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 10px;
+    }
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      .menu-toggle {
+        display: block;
+      }
+      .content {
+        margin-left: 0;
+        padding: 30px 15px;
+      }
+    }
+    /* Buttons for edit/delete */
+    .action-btn {
+      cursor: pointer;
+      font-size: 1.2rem;
+      margin-right: 10px;
+      color: #071c4d;
+    }
+    .action-btn:hover {
+      color: #0d6efd;
+    }
+  </style>
+</head>
+<body>
+  <button
+    class="menu-toggle"
+    onclick="document.querySelector('.sidebar').classList.toggle('active')"
+  >
+    <i class="bi bi-list"></i>
+  </button>
+
+  <div class="sidebar d-flex flex-column align-items-center">
+    <img src="/img/r 1.png" alt="Logo" />
+    <a href="#" class="nav-link"><i class="bi bi-house-door"></i></a>
+    <a href="registration.html" class="nav-link"><i class="bi bi-person"></i></a>
+    <a href="#" class="nav-link"><i class="bi bi-people"></i></a>
+    <a href="pensionStatus.html" class="nav-link"><i class="bi bi-card-list"></i></a>
+    <button
+      class="logout-btn mt-auto mb-4"
+      title="Logout"
+      id="logoutBtn"
+    >
+      <i class="bi bi-box-arrow-right"></i>
+    </button>
+  </div>
+
+  <div class="content">
+    <h2>Pension Status</h2>
+
+    <div class="search-container">
+      <input
+        type="text"
+        id="searchInput"
+        class="search-input"
+        placeholder="Search by name or address..."
+        aria-label="Search pensioners"
+      />
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Full Name</th>
+          <th>Address</th>
+          <th>Status</th>
+          <th>Actions</th> <!-- For edit/delete buttons -->
+        </tr>
+      </thead>
+      <tbody id="pensionTable">
+        <!-- Data rows get injected here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      let entries = JSON.parse(localStorage.getItem('pensioners')) || [];
+      const tableBody = document.getElementById('pensionTable');
+      const searchInput = document.getElementById('searchInput');
+
+      function renderTable(data) {
+        tableBody.innerHTML = '';
+
+        if (data.length === 0) {
+          const noRow = document.createElement('tr');
+          noRow.innerHTML = `<td colspan="4" class="text-center">No matching records found.</td>`;
+          tableBody.appendChild(noRow);
+          return;
+        }
+
+        data.forEach((entry, index) => {
+          const row = document.createElement('tr');
+
+          const middle = entry.middleName ? ` ${entry.middleName} ` : ' ';
+          const fullName = `${entry.firstName || ''}${middle}${entry.lastName || ''}`.trim();
+
+          let address = `${entry.street || ''}, ${entry.barangay || ''}`.replace(/^, |, $/g, '').trim();
+          if(address.startsWith(',')) address = address.substring(1).trim();
+          if(address.endsWith(',')) address = address.slice(0, -1).trim();
+
+          const statusText = entry.claimed ? 'Claimed' : 'Not Claimed';
+          const statusClass = entry.claimed ? 'status-active' : 'status-inactive';
+
+          row.innerHTML = `
+            <td>${fullName}</td>
+            <td>${address}</td>
+            <td class="${statusClass}">${statusText}</td>
+            <td>
+              <i class="bi bi-pencil-square action-btn" title="Edit" onclick="editEntry(${index})"></i>
+              <i class="bi bi-trash action-btn" title="Delete" onclick="deleteEntry(${index})"></i>
+            </td>
+          `;
+          tableBody.appendChild(row);
+        });
+      }
+
+      renderTable(entries);
+
+      searchInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase().trim();
+
+        const filtered = entries.filter(entry => {
+          const middle = entry.middleName ? ` ${entry.middleName} ` : ' ';
+          const fullName = `${entry.firstName || ''}${middle}${entry.lastName || ''}`.toLowerCase();
+          const address = `${entry.street || ''}, ${entry.barangay || ''}`.toLowerCase();
+          return fullName.includes(query) || address.includes(query);
+        });
+
+        renderTable(filtered);
+      });
+
+      window.editEntry = function(index) {
+        const entry = entries[index];
+        if (!entry) return alert('Entry not found.');
+
+        const firstName = prompt('First Name:', entry.firstName);
+        if (firstName === null) return;
+        const middleName = prompt('Middle Name:', entry.middleName || '');
+        if (middleName === null) return;
+        const lastName = prompt('Last Name:', entry.lastName);
+        if (lastName === null) return;
+        const street = prompt('Street:', entry.street || '');
+        if (street === null) return;
+        const barangay = prompt('Barangay:', entry.barangay || '');
+        if (barangay === null) return;
+        const claimedStr = prompt('Claimed? (yes/no):', entry.claimed ? 'yes' : 'no');
+        if (claimedStr === null) return;
+
+        entries[index] = {
+          ...entry,
+          firstName: firstName.trim(),
+          middleName: middleName.trim(),
+          lastName: lastName.trim(),
+          street: street.trim(),
+          barangay: barangay.trim(),
+          claimed: claimedStr.toLowerCase() === 'yes'
+        };
+
+        localStorage.setItem('pensioners', JSON.stringify(entries));
+        renderTable(entries);
+      };
+
+      window.deleteEntry = function(index) {
+        if (confirm('Are you sure you want to delete this entry?')) {
+          entries.splice(index, 1);
+          localStorage.setItem('pensioners', JSON.stringify(entries));
+          renderTable(entries);
+        }
+      };
+
+      // Logout button functionality with alert and redirect
+      document.getElementById('logoutBtn').addEventListener('click', function() {
+        alert('Logging out...');
+        // Redirect to login page or wherever you want
+        window.location.href = '../index.html'; // <-- change this if needed
+      });
+    });
+
+    // Sidebar toggle close on clicking outside on mobile
+    document.addEventListener("click", function (e) {
+      const sidebar = document.querySelector(".sidebar");
+      const toggle = document.querySelector(".menu-toggle");
+      if (
+        window.innerWidth <= 768 &&
+        sidebar.classList.contains("active") &&
+        !sidebar.contains(e.target) &&
+        !toggle.contains(e.target)
+      ) {
+        sidebar.classList.remove("active");
+      }
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Senior Citizen Registration</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" />
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #f4f4f4, #e4e4e4);
+      font-family: Arial, sans-serif;
+    }
+    .sidebar {
+      background-color: #071c4d;
+      width: 80px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 20px;
+      transition: transform 0.3s ease-in-out;
+      z-index: 1040;
+    }
+    .sidebar img {
+      width: 40px;
+      margin-bottom: 40px;
+    }
+    .sidebar .nav-link {
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      font-size: 1.5rem;
+    }
+    .sidebar i {
+      color: white;
+      font-size: 24px;
+      padding: 2rem;
+      margin-bottom: 30px;
+      cursor: pointer;
+    }
+    .sidebar .nav-link:hover {
+      border-radius: 16px;
+      background-color: #003580;
+      transition: .5s ease-in;
+    }
+    .logout-btn {
+      margin-top: auto;
+      margin-bottom: 20px;
+      color: white;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .logout-btn:hover {
+      color: #ff6b6b;
+    }
+    .content {
+      margin-left: 100px;
+      padding: 30px;
+    }
+    .form-label {
+      font-weight: bold;
+    }
+    .dotted {
+      border-bottom: 2px dotted #000;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .register-btn {
+      background-color: #071c4d;
+      color: white;
+      border: none;
+      padding: 10px 30px;
+      font-weight: bold;
+      width: auto;
+      display: block;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+    .form-control:focus,
+    .form-select:focus {
+      box-shadow: none;
+      border-color: #071c4d;
+    }
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1050;
+      font-size: 24px;
+      color: #071c4d;
+      background: white;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 10px;
+    }
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      .menu-toggle {
+        display: block;
+      }
+      .content {
+        margin-left: 0;
+        padding: 30px 15px;
+      }
+      .register-btn {
+        margin: 0 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  
+
+  <div class="sidebar d-flex flex-column align-items-center">
+    <img src="/img/r 1.png" alt="Logo" />
+    <a href="#" class="nav-link"><i class="bi bi-house-door"></i></a>
+    <a href="/html/registration.html" class="nav-link"><i class="bi bi-person"></i></a>
+    <a href="#" class="nav-link"><i class="bi bi-people"></i></a>
+    <a href="/html/pensionStatus.html" class="nav-link"><i class="bi bi-card-list"></i></a>
+    <button
+      class="logout-btn mt-auto mb-4"
+      title="Logout"
+      id="logoutBtn">
+      <i class="bi bi-box-arrow-right"></i>
+    </button>
+  </div>
+
+  <div class="content">
+    <h2 class="fw-bold">Senior Citizen Registration</h2>
+    <div class="dotted"></div>
+
+    <form id="registrationForm">
+      <div class="alert alert-danger d-none" id="errorAlert"></div>
+
+      <div class="row mb-3">
+        <label class="form-label">Name</label>
+        <div class="col-md-4">
+          <input type="text" class="form-control" id="lastName" placeholder="Last Name" required />
+        </div>
+        <div class="col-md-4">
+          <input type="text" class="form-control" id="firstName" placeholder="First Name" required />
+        </div>
+        <div class="col-md-4">
+          <input type="text" class="form-control" id="middleName" placeholder="Middle Name" />
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label class="form-label">Birthday</label>
+        <div class="col-md-6">
+          <input type="date" class="form-control" id="birthday" required />
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label class="form-label">Barangay</label>
+        <div class="col-md-6">
+          <select class="form-select" id="barangay" required>
+            <option value="" selected disabled>Select Barangay</option>
+            <option value="Binanuuan">Binanuuan</option>
+            <option value="Caawigan">Caawigan</option>
+            <option value="Cahabaan">Cahabaan</option>
+            <option value="Calintaan">Calintaan</option>
+            <option value="Del Carmen">Del Carmen</option>
+            <option value="Gabon">Gabon</option>
+            <option value="Itomang">Itomang</option>
+            <option value="Poblacion">Poblacion</option>
+            <option value="San Francisco">San Francisco</option>
+            <option value="San Isidro">San Isidro</option>
+            <option value="San Jose">San Jose</option>
+            <option value="San Nicolas">San Nicolas</option>
+            <option value="Santa Cruz">Santa Cruz</option>
+            <option value="Santa Elena">Santa Elena</option>
+            <option value="Santo Niño">Santo Niño</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label class="form-label">ID No</label>
+        <div class="col-md-6">
+          <input type="text" class="form-control" id="idNo" required />
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label class="form-label">Purok</label>
+        <div class="col-md-6">
+          <input type="text" class="form-control" id="purok" required />
+        </div>
+      </div>
+
+      <button type="submit" class="register-btn">Register</button>
+      <button onclick="generateReport()" class="btn btn-success mt-3" type="button">Generate Report</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+        alert('Logging out...');
+        // Redirect to login page or wherever you want
+        window.location.href = '../index.html'; // <-- change this if needed
+      });
+    document.getElementById("registrationForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const lastName = document.getElementById("lastName").value.trim();
+      const firstName = document.getElementById("firstName").value.trim();
+      const middleName = document.getElementById("middleName").value.trim();
+      const birthday = document.getElementById("birthday").value;
+      const barangay = document.getElementById("barangay").value.trim();
+      const idNo = document.getElementById("idNo").value.trim();
+      const purok = document.getElementById("purok").value.trim();
+
+      const errorAlert = document.getElementById("errorAlert");
+      errorAlert.classList.add("d-none");
+
+      if (!lastName || !firstName || !birthday || !barangay || !idNo || !purok) {
+        errorAlert.textContent = "Please fill out all required fields.";
+        errorAlert.classList.remove("d-none");
+        return;
+      }
+
+      const today = new Date();
+      const birthDate = new Date(birthday);
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+
+      if (age < 60) {
+        errorAlert.textContent = "Only senior citizens (60 years old and above) can register.";
+        errorAlert.classList.remove("d-none");
+        return;
+      }
+
+      const formData = {
+        lastName,
+        firstName,
+        middleName,
+        birthday,
+        barangay,
+        idNo,
+        purok,
+        status: "ACTIVE"
+      };
+
+      let pensioners = JSON.parse(localStorage.getItem("pensioners")) || [];
+      pensioners.push(formData);
+      localStorage.setItem("pensioners", JSON.stringify(pensioners));
+
+      alert("Registered successfully!");
+      this.reset();
+    });
+
+    document.addEventListener("click", function (e) {
+      const sidebar = document.querySelector(".sidebar");
+      const toggle = document.querySelector(".menu-toggle");
+      if (
+        window.innerWidth <= 768 &&
+        sidebar.classList.contains("active") &&
+        !sidebar.contains(e.target) &&
+        !toggle.contains(e.target)
+      ) {
+        sidebar.classList.remove("active");
+      }
+    });
+
+    function generateReport() {
+  let pensioners = JSON.parse(localStorage.getItem("pensioners")) || [];
+  let reportContent = "Last Name,First Name,Middle Name,Birthday,Barangay,ID No,Purok\n";
+
+  pensioners.forEach(p => {
+    reportContent += `${p.lastName},${p.firstName},${p.middleName},${p.birthday},${p.barangay},${p.idNo},${p.purok}\n`;
+  });
+
+  let blob = new Blob([reportContent], { type: "text/csv" });
+  let a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "senior_citizen_report.csv";
+  a.click();
+}
+
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

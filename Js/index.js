@@ -53,7 +53,7 @@ function login(event) {
       sessionStorage.setItem("loggedInUser", JSON.stringify(user));
 
       setTimeout(() => {
-          window.location.href = "/html/dashboard.html";
+          window.location.href = "/html/registration.html";
       }, 1000);
   } else {
       showAlert("Invalid admin credentials.", "danger");
